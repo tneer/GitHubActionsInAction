@@ -26,4 +26,18 @@ jobs:
       - job_2
       - job_3
     steps:
-      - run: "echo Job: ${{ github.job }}"
+      - run: |
+          echo Job: ${{ github.job }}
+
+  generate-a-secret-output:
+    runs-on: ubuntu-latest
+    steps:
+      - id: sets-a-secret
+        name: Generate, mask and output a secret
+        run: |
+          the_secret=$((RANDOM))
+          echo "::add-mask::$the_secret"
+          echo "secret-number=$the_secret" >> "$GITHUB_OUTPUT"
+      - name: Use the secret output
+        run: |
+          echo "the secret number is ${{ steps.sets-a-secret.outputs.secret-number }}"
